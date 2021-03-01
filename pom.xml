@@ -7,8 +7,18 @@
     <groupId>com.roncoo</groupId>
     <artifactId>code-obfuscation</artifactId>
     <version>1.0.0</version>
-
     <packaging>maven-plugin</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>roncoo open source</description>
+    <url>https://github.com/roncoo/code-obfuscation</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.maven</groupId>
@@ -26,6 +36,49 @@
             <version>1.6.1</version>
         </dependency>
     </dependencies>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>fengyongwei</name>
+            <email>fengyw@roncoo.com</email>
+            <organization>LingKe, Co., Ltd.</organization>
+            <organizationUrl>https://www.roncoo.net</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+        <developer>
+            <name>lizhichong</name>
+            <email>lizc@roncoo.com</email>
+            <organization>LingKe, Co., Ltd.</organization>
+            <organizationUrl>https://www.roncoo.net</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
+
+    <organization>
+        <name>LingKe, Co., Ltd.</name>
+        <url>https://www.roncoo.net</url>
+    </organization>
+
+    <scm>
+        <connection>scm:git:https://github.com/roncoo/code-obfuscation.git</connection>
+        <developerConnection>scm:git:https://github.com/roncoo/code-obfuscation.git</developerConnection>
+        <url>https://github.com/roncoo/code-obfuscation</url>
+        <tag>v${project.version}</tag>
+    </scm>
+
     <build>
         <resources>
             <resource>
@@ -34,14 +87,100 @@
             </resource>
         </resources>
         <plugins>
+            <!-- Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>6</source>
-                    <target>6</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <skip>true</skip>
+                    <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
+            </plugin>
+
+            <!-- Source -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Deploy -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-deploy</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- nexus-staging -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>oss-maven2</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+
+            <!-- GPG -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>oss-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>oss-maven2</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
 </project>
