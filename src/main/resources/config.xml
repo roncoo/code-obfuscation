@@ -4,6 +4,7 @@
 <config>
     <property name="classes-naming" value="unique"/>
     <property name="classes-naming" value="iii"/>
+    <property name="classes-naming-prefix" value="c_"/>
     <property name="methods-naming" value="iii"/>
     <property name="fields-naming" value="iii"/>
     <!--方法参数名称保持不变，避免公共api接口等出现异常 -->

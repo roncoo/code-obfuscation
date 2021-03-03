@@ -135,14 +135,14 @@ public class ShellExcutor {
         }
     }
 
-    public static void createAndRunShell(String targetPath) throws Exception {
+    public static void createAndRunShell(String targetPath, String configPath) throws Exception {
         //将脚本写到要加密的jar所在目录下
         //判断当前项目所在环境 Windows Mac Linux
         if (OSUtil.isMac() || OSUtil.isLinux()) {
             //Mac Linux
             System.out.println("OS: Linux");
             String runAllatoriTarget = targetPath + "/run.sh";
-            FileUtil.createFile(runAllatoriTarget, "java -Xms128m -Xmx512m -jar " + targetPath + "/allatori.jar " + targetPath + "/config.xml");
+            FileUtil.createFile(runAllatoriTarget, "java -Xms128m -Xmx512m -jar " + targetPath + "/allatori.jar " + configPath);
             //执行脚本
             runShell("run.sh", targetPath);
             System.out.println("********代码混淆完成*********");
@@ -150,7 +150,7 @@ public class ShellExcutor {
             //Windows
             System.out.println("OS: Windows");
             String runAllatoriTarget = targetPath + "/run.bat";
-            FileUtil.createFile(runAllatoriTarget, "java -Xms128m -Xmx512m -jar " + targetPath + "/allatori.jar " + targetPath + "/config.xml");
+            FileUtil.createFile(runAllatoriTarget, "java -Xms128m -Xmx512m -jar " + targetPath + "/allatori.jar " + configPath);
             //执行脚本
             runBat(runAllatoriTarget);
             System.out.println("********代码混淆完成*********");

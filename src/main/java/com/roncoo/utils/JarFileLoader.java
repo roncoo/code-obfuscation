@@ -54,7 +54,7 @@ public class JarFileLoader {
      * @param targetPath
      * @throws Exception
      */
-    public synchronized static void copyFile(URL url, String targetPath) throws Exception {
+    public synchronized static void copyFile(URL url, String targetPath, boolean copyConfigFile) throws Exception {
         String protocol = url.getProtocol();
         int startIndex = url.getPath().indexOf("file:");
         int endIndex = url.getPath().lastIndexOf("!/com/roncoo");
@@ -68,15 +68,15 @@ public class JarFileLoader {
                 if (jarEntry.isDirectory()) {
                     continue;
                 }
-                loadJar(jarEntry, path, targetPath);
+                loadJar(jarEntry, path, targetPath, copyConfigFile);
             }
         } else if ("file".equals(protocol)) {
             File file = new File(path);
-            loadFile(file, targetPath);
+            loadFile(file, targetPath, copyConfigFile);
         }
     }
 
-    private static void loadFile(File file, String targetPath) throws IOException {
+    private static void loadFile(File file, String targetPath, boolean copyConfigFile) throws IOException {
         if (null == file) {
             return;
         }
@@ -84,21 +84,21 @@ public class JarFileLoader {
             File[] files = file.listFiles();
             if (null != files) {
                 for (File f : files) {
-                    loadFile(f, targetPath);
+                    loadFile(f, targetPath, copyConfigFile);
                 }
             }
         } else {
-            if (file.getName() != null && (file.getName().endsWith(".jar") || file.getName().indexOf("config.xml") != -1)) {
+            if (file.getName() != null && (file.getName().endsWith(".jar") || (file.getName().indexOf("config.xml") != -1 && copyConfigFile))) {
                 File allatoriTarget = new File(targetPath + "/" + file.getName());
                 FileUtil.copyFile(file, allatoriTarget);
             }
         }
     }
 
-    private static void loadJar(JarEntry jarEntry, String path, String targetPath) throws Exception {
+    private static void loadJar(JarEntry jarEntry, String path, String targetPath, boolean copyConfigFile) throws Exception {
         String entityName = jarEntry.getName();
         String fileName = entityName.substring(entityName.lastIndexOf("/") + 1);
-        if (!fileName.endsWith("jar") && fileName.indexOf("config.xml") == -1) {
+        if (!fileName.endsWith("jar") && (!copyConfigFile || fileName.indexOf("config.xml") == -1)) {
             return;
         }
 
